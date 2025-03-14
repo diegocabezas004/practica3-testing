@@ -5,29 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Post extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<\Database\Factories\PostFactory> */
     use HasFactory;
 
-
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    protected $hidden = [
-        'password',
+        'title',
+        'slug',
+        'excerpt',
+        'content',
     ];
 
     protected function casts(): array
     {
         return [
-            'password' => 'hashed',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
     }
-
 }
