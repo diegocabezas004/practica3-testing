@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('category_post', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('category_id')->constrained('category');
-            $table->foreignId('post_id')->constrained('post');
+            $table->foreignId('category_id')->constrained('categories');
+            $table->foreignId('post_id')->constrained('posts');
         });
     }
 
