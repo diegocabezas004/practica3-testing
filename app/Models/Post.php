@@ -15,12 +15,17 @@ class Post extends Model
     {
         return $this->belongsToMany(Category::class);
     } 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     protected $fillable = [
         'title',
         'slug',
         'excerpt',
         'content',
+        'user_id'
     ];
 
     protected function casts(): array

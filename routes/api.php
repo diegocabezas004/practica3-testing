@@ -1,17 +1,16 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/v1/posts');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::middleware('auth:sanctum')->prefix('v1')->group(function(){
 
-    Route::get('/users', function(){
-        return response()->json([
-            'users'=>User::all()
-        ]);
-    });
+
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    Route::post('/posts', [PostController::class, 'store']);
+    Route::get('/posts', [PostController::class, 'index']);
 });
