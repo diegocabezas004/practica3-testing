@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Services\SlugCreator;
+use Log;
 
 class PostController extends Controller
 {
@@ -56,6 +58,45 @@ class PostController extends Controller
         ];
 
         return response()->json($formattedOutputPost, 201);
-        
+
     }
+    public function index(Request $request)
+    {
+        try {
+            $query = Post::where('user_id', Auth::id());
+
+            if ($request->has('search') && !empty($request->search)) {
+                $searchTerm = $request->search;
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->where('title', 'like', "%$searchTerm%")
+                        ->orWhere('content', 'like', "%$searchTerm%");
+                });
+            }
+
+            // Paginación de los posts
+            $posts = $query->orderBy('title')->with(['categories', 'user'])->paginate(10);
+
+            // Devolviendo la respuesta con la estructura esperada
+            return response()->json([
+                'status' => 'success',  // Estado de la respuesta
+                'data' => $posts->items(),  // Los items de la página actual
+                'meta' => [
+                    'current_page' => $posts->currentPage(),
+                    'from' => $posts->firstItem(),
+                    'last_page' => $posts->lastPage(),
+                    'path' => $posts->url(1),
+                    'per_page' => $posts->perPage(),
+                    'to' => $posts->lastItem(),
+                    'total' => $posts->total(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // Log de errores detallado
+            Log::error("Error al obtener los posts: " . $e->getMessage(), ['exception' => $e]);
+
+            // Respuesta de error
+            return response()->json(['error' => 'Error al obtener los posts: ' . $e->getMessage()], 500);
+        }
+    }
+
 }

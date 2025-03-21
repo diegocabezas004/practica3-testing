@@ -14,9 +14,6 @@ class ErrorAuthEP extends TestCase
 
 
     /**
-     * Prueba que verifica que un usuario no autenticado 
-     * recibe un error 401 al intentar crear un post.
-     *
      * @return void
      */
     public function test_unauthenticated_user_cannot_access_protected_endpoint(){
