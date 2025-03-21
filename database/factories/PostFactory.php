@@ -2,13 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use Faker\Generator as Faker;
+
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
  */
 class PostFactory extends Factory
 {
+
+    protected $model = Post::class;
     /**
      * Define the model's default state.
      *
@@ -16,12 +23,16 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+
+        $title = $this->faker->sentence;
+
         return [
-            'title' => fake()->sentence(),
-            'slug' => fake()->slug(),
+            'title' => $title,
+            'slug' => Str::slug($title),
             'excerpt' => fake()->paragraph(),
             'content' => fake()->paragraphs(3, true),
-            'created_at' => fake()->dateTime(),
+            'user_id' => User::factory(), // Asegurar que cada post tenga un usuario válido
+            'created_at' => now(),
             'updated_at' => now(),
         ];
     }
